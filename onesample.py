@@ -107,29 +107,32 @@ def one_sample_test(x, y, z, reps=1000, is_distance=False, remove_isolates=True)
     x, y, z : ndarray of float
         Input data matrices.
     """
-    check_input = _CheckInputs(
-        [x],
-        y,
-        is_dist=is_distance,
-        remove_isolates=remove_isolates,
-    )
-    x, y = check_input()
+    try:
+        check_input = _CheckInputs(
+            [x],
+            y,
+            is_dist=is_distance,
+            remove_isolates=remove_isolates,
+        )
+        x, y = check_input()
 
-    x = np.asarray(x[0])
-    y = y
-    z = z
-    
-    y_unique, unique_idx = np.unique(y, return_index=True)
+        x = np.asarray(x[0])
+        y = y
+        z = z
 
-    sample_stat = statistic(x, y, z, is_distance=True, remove_isolates=False)[2]
-    
-    # run permutation test
-    null_stat = np.zeros((reps))
-    for i in range(reps):
-        null_stat[i] = statistic(x, y, permute_z_respect_y(y, z, y_unique=y_unique, unique_idx=unique_idx),
-                                is_distance=True, remove_isolates=False)[2]
-    pvalue = ((null_stat >= sample_stat).sum() + 1)/(reps + 1)
-    return sample_stat, pvalue, null_stat
+        y_unique, unique_idx = np.unique(y, return_index=True)
+
+        sample_stat = statistic(x, y, z, is_distance=True, remove_isolates=False)[2]
+
+        # run permutation test
+        null_stat = np.zeros((reps))
+        for i in range(reps):
+            null_stat[i] = statistic(x, y, permute_z_respect_y(y, z, y_unique=y_unique, unique_idx=unique_idx),
+                                    is_distance=True, remove_isolates=False)[2]
+        pvalue = ((null_stat >= sample_stat).sum() + 1)/(reps + 1)
+        return sample_stat, pvalue, null_stat
+    except:
+        return np.nan
 
 def manova_statistic():
     try:
@@ -141,8 +144,11 @@ def manova_statistic():
         return np.nan
     
 def dcorr_statistic():
-    return Dcorr().statistic(x, z)
-
+    try:
+        return Dcorr().statistic(x, z)
+    except:
+        return np.nan
+    
 def one_sample_manova(x, y, z):
     try:
         indep = pd.DataFrame({"Individual": y, "Class": z})
@@ -153,8 +159,11 @@ def one_sample_manova(x, y, z):
         return np.nan
 
 def one_sample_dcorr(x, z, reps=1000, is_distance=False):
-    return Dcorr().test(x, z, reps=reps)
-
+    try:
+        return Dcorr().test(x, z, reps=reps)
+    except:
+        return np.nan
+    
 def within_sub_discr(discrs, weights):
     return (np.diag(weights)*np.diag(discrs)/(np.diag(weights).sum())).sum()
 
