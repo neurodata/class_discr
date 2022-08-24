@@ -32,7 +32,6 @@ def gaussian_data(N, Nsub, K, y, Z, ndim, effect_size=1):
 
 def sample_sphere(npoints, ndim, radius_sphere=1):
     # points on sphere
-    radius_sphere = 1.1
 
     V_sphere = np.random.normal(0, 1, (npoints, ndim))
     norms = np.linalg.norm(V_sphere, axis=1)
@@ -56,8 +55,9 @@ def ball_disc_data(z_persub, y, ndim, N, Nsub, effect_size=1):
     
     radius_ball = 1
     
+    rad_sphere = (radius_ball*(1 + effect_size/np.sqrt(ndim)))
     V[z_persub == 1] = sample_sphere(int((z_persub == 1).sum()), ndim, 
-                                     radius_sphere=(radius_ball*(1 + effect_size/np.sqrt(ndim))))
+                                     radius_sphere=rad_sphere)
 
     V[z_persub == 0] = sample_ball(int((z_persub == 0).sum()), ndim, 
                                         radius_ball=radius_ball)

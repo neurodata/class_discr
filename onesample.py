@@ -134,7 +134,7 @@ def one_sample_test(x, y, z, reps=1000, is_distance=False, remove_isolates=True)
     except:
         return np.nan
 
-def manova_statistic():
+def manova_statistic(x, y, z):
     try:
         indep = pd.DataFrame({"Individual": y, "Class": z})
         model = MANOVA(x, indep)
@@ -143,7 +143,9 @@ def manova_statistic():
     except:
         return np.nan
     
-def dcorr_statistic():
+def dcorr_statistic(x, z):
+    if np.ndim(z) == 1:
+        z = np.expand_dims(z, axis=1)
     try:
         return Dcorr().statistic(x, z)
     except:
@@ -159,6 +161,8 @@ def one_sample_manova(x, y, z):
         return np.nan
 
 def one_sample_dcorr(x, z, reps=1000, is_distance=False):
+    if np.ndim(z) == 1:
+        z = np.expand_dims(z, axis=1)
     try:
         return Dcorr().test(x, z, reps=reps)
     except:
