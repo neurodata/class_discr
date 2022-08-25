@@ -31,7 +31,7 @@ def two_sample_test(x1, x2, y, z, reps=1000, is_distance=False, remove_isolates=
     for i in range(reps):
         z_reord = permute_z_respect_y(y, z, y_unique=y_unique, unique_idx=unique_idx)
         try:
-            null_diff_cdiscr[i] = statistic(x2, y, z_reord) - statistic(x1, y, z_reord)
+            null_diff_cdiscr[i] = statistic(x2, y, z_reord)[2] - statistic(x1, y, z_reord)[2]
         except:
             null_diff_cdiscr[i] = np.nan
         try:
